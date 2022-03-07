@@ -1,6 +1,6 @@
-# SolarSploit
+# sunspot-go
 
-Sample malicious program that emulates the SolarWinds attack vector.
+Sample malicious program that emulates the SolarWinds attack on build process.
 
 1. Listen for processes that use the go compiler
 2. Wait for a syscall to open a main.go file
@@ -11,27 +11,13 @@ Sample malicious program that emulates the SolarWinds attack vector.
 
 ## How to use
 
-**Warning** this software will modify files in your system.  Use in a non-production environment only.  This does not work 100% of the time.  I think there are some issues with the way Go handles threading, which occasionally causes the tracing to fail.  If you have a fix please submit a PR.
-
-
 1.  compile program
 `go build .`
-2.  Run `solarsploit` as root
+2.  Run app as root
 3.  In another terminal compile a Go program that includes a file name of `main.go`
-4.  `Solarsploit` will inject the following `init function`
+4.  It will inject the following `init function`
 ```
 func init() {
-	fmt.Println("Your code is hacked")
+	fmt.Println("Malicious code is injected by SNE!!")
 }
 ```
-
-## How to mitigate
-
-Set the IMA policy to `tcb`
-```GRUB_CMDLINE_LINUX="ima_policy=tcb ima_hash=sha256 ima=on"```
-
-Inspect the IMA log and compare the SHASUM hash of the input files to the value in the logs. Then, verify the log by calculating the aggregate of all of the IMA checksums to the value in PCR register 10 of the TPM device; they should match. 
-
-![Screenshot from 2021-09-28 23-18-24](https://user-images.githubusercontent.com/6634325/135206145-da183619-2911-48a5-a458-4f7fa3756a56.png)
-
-ref:  https://github.com/testifysec/go-ima
